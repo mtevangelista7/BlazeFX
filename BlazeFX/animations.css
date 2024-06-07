@@ -1,0 +1,12 @@
+﻿.zoom-in {
+    animation-name: zoomIn;
+}
+
+@keyframes zoomIn {
+    from {
+        transform: scale(0);
+    }
+    to {
+        transform: scale(1);
+    }
+}

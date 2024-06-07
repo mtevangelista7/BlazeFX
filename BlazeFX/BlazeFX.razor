@@ -1,1 +1,24 @@
-﻿
+﻿@inherits AnimationBase
+
+<div class="@ClassNames" @attributes="AdditionalAttributes" style="@Style">
+    @ChildContent
+</div>
+
+@code {
+    private string Style => $"animation-duration: {Duration.TotalSeconds}s; animation-delay: {Delay.TotalSeconds}s; animation-timing-function: {GetEasingFunction(Easing)};";
+
+    protected override void OnParametersSet()
+    {
+        ClassNames = $"{Animations.ToString().ToLower()} {AdditionalAttributes?.GetValueOrDefault("class")}";
+    }
+
+    private string GetEasingFunction(Easing easing)
+    {
+        return easing switch
+        {
+            Easing.EaseIn => "ease-in",
+            Easing.EaseOut => "ease-out",
+            _ => "ease"
+        };
+    }
+}

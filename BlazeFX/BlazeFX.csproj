@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <PackageId>BlazeFX</PackageId>
+        <Version>1.0.9</Version>
+        <Authors>Matheus Evangelista Dos Santos</Authors>
+        <Description>BlazeFX is a animation library that provides simple CSS-based animations for Blazor components</Description>
+        <PackageTags>blazor;animation;css</PackageTags>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageProjectUrl>https://github.com/mtevangelista7/BlazeFX</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/mtevangelista7/BlazeFX</RepositoryUrl>
+        <GenerateDocumentationFile>True</GenerateDocumentationFile>
+        <RepositoryType>GIT</RepositoryType>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <_ContentIncludedByDefault Remove="wwwroot\blazefx.css"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Components" Version="8.0.10"/>
+        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.10"/>
+    </ItemGroup>
+
+</Project>

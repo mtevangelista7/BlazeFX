@@ -1,9 +1,43 @@
-﻿namespace BlazeFX
+﻿namespace BlazeFX;
+
+public enum Easing
 {
-    public enum Easing
-    {
-        EaseIn,
-        EaseOut
-        // TODO: Adicionar mais easing
-    }
+	Ease,
+	EaseIn,
+	EaseOut,
+	EaseInOut,
+	Linear,
+	StepStart,
+	StepEnd,
+	EaseInSine,
+	EaseOutSine,
+	EaseInOutSine,
+	EaseInQuad,
+	EaseOutQuad,
+	EaseInOutQuad,
+	EaseInCubic,
+	EaseOutCubic,
+	EaseInOutCubic,
+	EaseInQuart,
+	EaseOutQuart,
+	EaseInOutQuart,
+	EaseInQuint,
+	EaseOutQuint,
+	EaseInOutQuint,
+	EaseInExpo,
+	EaseOutExpo,
+	EaseInOutExpo,
+	EaseInCirc,
+	EaseOutCirc,
+	EaseInOutCirc,
+	EaseInBack,
+	EaseOutBack,
+	EaseInOutBack,
+	EaseInElastic,
+	EaseOutElastic,
+	EaseInOutElastic,
+	EaseInBounce,
+	EaseOutBounce,
+	EaseInOutBounce
 }
+

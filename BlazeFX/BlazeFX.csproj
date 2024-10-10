@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<TargetFramework>net8.0</TargetFramework>
 		<PackageId>BlazeFX</PackageId>
-		<Version>1.1.0</Version>
+		<Version>1.1.1</Version>
 		<Authors>Matheus Evangelista Dos Santos</Authors>
 		<Description>BlazeFX is a animation library that provides simple CSS-based animations for Blazor components</Description>
 		<PackageTags>blazor;animation;css</PackageTags>
@@ -17,10 +17,6 @@
 
 	<ItemGroup>
 		<_ContentIncludedByDefault Remove="wwwroot\blazefx.css"/>
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Include="README.md" Pack="true" PackagePath="\"/>
 	</ItemGroup>
 
 	<ItemGroup>

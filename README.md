@@ -87,3 +87,9 @@ BlazeFX is under active development. Our roadmap includes:
 If you need help or have any questions, please:
 
 - Open an [Issue](https://github.com/mtevangelista7/BlazeFX/issues)
+
+## Troubleshooting
+
+#### Double Animation on First Load
+
+If you encounter issues where animations run twice when your Blazor project/component is loaded for the first time, you may need to disable pre-rendering.

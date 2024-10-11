@@ -1,31 +1,117 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Rendering;
+using Microsoft.JSInterop;
 
 namespace BlazeFX;
 
+/// <inheritdoc />
 public class BlazeFX : ComponentBase
 {
     [Parameter] public RenderFragment ChildContent { get; set; }
-    [Parameter] public Animations Animation { get; set; }
-    [Parameter] public TimeSpan Duration { get; set; } = TimeSpan.FromSeconds(1);
-    [Parameter] public TimeSpan Delay { get; set; } = TimeSpan.Zero;
-    [Parameter] public Easing Easing { get; set; } = Easing.EaseIn;
 
-    protected override void BuildRenderTree(RenderTreeBuilder builder)
+    /// <summary>
+    /// The type of animation to apply.
+    /// </summary>
+    [Parameter]
+    public Animations Animation { get; set; }
+
+    /// <summary>
+    /// The duration of the animation.
+    /// </summary>
+    [Parameter]
+    public TimeSpan Duration { get; set; } = TimeSpan.FromSeconds(1);
+
+    /// <summary>
+    /// The delay before the animation starts.
+    /// </summary>
+    [Parameter]
+    public TimeSpan Delay { get; set; } = TimeSpan.Zero;
+
+    /// <summary>
+    /// The easing function that controls the animation's acceleration.
+    /// </summary>
+    [Parameter]
+    public Easing Easing { get; set; } = Easing.EaseIn;
+
+    /// <summary>
+    /// If true, the animation will only render when complete.
+    /// IMPORTANT! If RenderCompleteOnly is set to true but pre-rendering is not enabled (e.g., in a static server environment), the animation and the component involved may not appear, remaining visibly hidden.
+    /// </summary>
+    [Parameter]
+    public bool RenderCompleteOnly { get; set; } = false;
+
+    [Inject] private IJSRuntime JSRuntime { get; set; }
+
+    private ElementReference _elementReference;
+    private bool _shouldAnimate = false;
+    private string _currentStyle;
+
+    /// <inheritdoc />
+    protected override void OnParametersSet()
+    {
+        if (RenderCompleteOnly)
+        {
+            _currentStyle = "visibility: hidden;";
+            _shouldAnimate = false;
+        }
+        else
+        {
+            SetAnimationStyle();
+        }
+    }
+
+    /// <inheritdoc />
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && RenderCompleteOnly)
+        {
+            SetAnimationStyle();
+            StateHasChanged();
+        }
+
+        if (_shouldAnimate)
+        {
+            await ApplyAnimationAsync();
+        }
+    }
+
+    private void SetAnimationStyle()
+    {
+        _currentStyle = GetAnimationStyle();
+        _shouldAnimate = true;
+    }
+
+    private async Task ApplyAnimationAsync()
+    {
+        var classAttribute = GetClassAttribute();
+        await JSRuntime.InvokeVoidAsync("blazeFX.applyAnimation", _elementReference, classAttribute, _currentStyle);
+    }
+
+    /// <inheritdoc />
+    protected override void BuildRenderTree(Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder builder)
     {
         builder.OpenElement(0, "div");
-        builder.AddAttribute(1, "class", $"blazefx-animation {Animation.ToString().ToLowerInvariant()}");
-        builder.AddAttribute(2, "style", GetAnimationStyle());
-        builder.AddContent(3, ChildContent);
+        builder.AddAttribute(1, "class", GetClassAttribute());
+        builder.AddAttribute(2, "style", _currentStyle);
+        builder.AddElementReferenceCapture(3, elementReference => _elementReference = elementReference);
+        builder.AddContent(4, ChildContent);
         builder.CloseElement();
+    }
+
+    private string GetClassAttribute()
+    {
+        const string baseClass = "blazefx-animation";
+        var animationClass = Animation.ToString().ToLowerInvariant();
+        return _shouldAnimate ? $"{baseClass} {animationClass}" : baseClass;
     }
 
     private string GetAnimationStyle()
     {
         return $"animation-duration: {Duration.TotalSeconds}s; " +
                $"animation-delay: {Delay.TotalSeconds}s; " +
-               $"animation-timing-function: {GetEasingFunction()};";
+               $"animation-timing-function: {GetEasingFunction()}; " +
+               $"visibility: visible;";
     }
 
     private string GetEasingFunction()
@@ -61,20 +147,6 @@ public class BlazeFX : ComponentBase
             Easing.EaseInBack => "cubic-bezier(0.36, 0, 0.66, -0.56)",
             Easing.EaseOutBack => "cubic-bezier(0.34, 1.56, 0.64, 1)",
             Easing.EaseInOutBack => "cubic-bezier(0.68, -0.6, 0.32, 1.6)",
-
-            // Soon ->
-
-            // Easing.StepStart => "step-start",
-            // Easing.StepEnd => "step-end",
-            //
-            // Easing.EaseInElastic => "ease-in-elastic",
-            // Easing.EaseOutElastic => "ease-out-elastic",
-            // Easing.EaseInOutElastic => "ease-in-out-elastic",
-            //
-            // Easing.EaseInBounce => "ease-in-bounce",
-            // Easing.EaseOutBounce => "ease-out-bounce",
-            // Easing.EaseInOutBounce => "ease-in-out-bounce",
-
             _ => "ease" // default
         };
     }

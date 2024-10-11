@@ -5,14 +5,40 @@ using Microsoft.JSInterop;
 
 namespace BlazeFX;
 
+/// <inheritdoc />
 public class BlazeFX : ComponentBase
 {
     [Parameter] public RenderFragment ChildContent { get; set; }
-    [Parameter] public Animations Animation { get; set; }
-    [Parameter] public TimeSpan Duration { get; set; } = TimeSpan.FromSeconds(1);
-    [Parameter] public TimeSpan Delay { get; set; } = TimeSpan.Zero;
-    [Parameter] public Easing Easing { get; set; } = Easing.EaseIn;
-    [Parameter] public bool RenderCompleteOnly { get; set; } = false;
+
+    /// <summary>
+    /// The type of animation to apply.
+    /// </summary>
+    [Parameter]
+    public Animations Animation { get; set; }
+
+    /// <summary>
+    /// The duration of the animation.
+    /// </summary>
+    [Parameter]
+    public TimeSpan Duration { get; set; } = TimeSpan.FromSeconds(1);
+
+    /// <summary>
+    /// The delay before the animation starts.
+    /// </summary>
+    [Parameter]
+    public TimeSpan Delay { get; set; } = TimeSpan.Zero;
+
+    /// <summary>
+    /// The easing function that controls the animation's acceleration.
+    /// </summary>
+    [Parameter]
+    public Easing Easing { get; set; } = Easing.EaseIn;
+
+    /// <summary>
+    /// If true, the animation will only render when complete.
+    /// </summary>
+    [Parameter]
+    public bool RenderCompleteOnly { get; set; } = false;
 
     [Inject] private IJSRuntime JSRuntime { get; set; }
 
@@ -20,6 +46,7 @@ public class BlazeFX : ComponentBase
     private bool _shouldAnimate = false;
     private string _currentStyle;
 
+    /// <inheritdoc />
     protected override void OnParametersSet()
     {
         if (RenderCompleteOnly)
@@ -33,6 +60,7 @@ public class BlazeFX : ComponentBase
         }
     }
 
+    /// <inheritdoc />
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender && RenderCompleteOnly)
@@ -59,6 +87,7 @@ public class BlazeFX : ComponentBase
         await JSRuntime.InvokeVoidAsync("blazeFX.applyAnimation", _elementReference, classAttribute, _currentStyle);
     }
 
+    /// <inheritdoc />
     protected override void BuildRenderTree(Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder builder)
     {
         builder.OpenElement(0, "div");

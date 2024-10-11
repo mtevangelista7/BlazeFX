@@ -7,8 +7,6 @@ public enum Easing
     EaseOut,
     EaseInOut,
     Linear,
-    // StepStart,
-    // StepEnd,
     EaseInSine,
     EaseOutSine,
     EaseInOutSine,
@@ -33,10 +31,4 @@ public enum Easing
     EaseInBack,
     EaseOutBack,
     EaseInOutBack,
-    // EaseInElastic,
-    // EaseOutElastic,
-    // EaseInOutElastic,
-    // EaseInBounce,
-    // EaseOutBounce,
-    // EaseInOutBounce
 }

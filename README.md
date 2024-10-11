@@ -74,6 +74,7 @@ You can easily switch between various animations and adjust parameters like `Eas
 - `Delay`: Add a delay before the animation starts
 - `RenderCompleteOnly`: Ensure the animation runs only after pre-rendering is complete.
 
+**IMPORTANT!** If RenderCompleteOnly is set to true but pre-rendering is not enabled (e.g., in a static server environment), the animation and the component involved may not appear, remaining visibly hidden.
 
 ## Contributing
 

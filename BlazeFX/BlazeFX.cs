@@ -36,6 +36,7 @@ public class BlazeFX : ComponentBase
 
     /// <summary>
     /// If true, the animation will only render when complete.
+    /// IMPORTANT! If RenderCompleteOnly is set to true but pre-rendering is not enabled (e.g., in a static server environment), the animation and the component involved may not appear, remaining visibly hidden.
     /// </summary>
     [Parameter]
     public bool RenderCompleteOnly { get; set; } = false;

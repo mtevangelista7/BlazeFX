@@ -27,15 +27,21 @@ dotnet add package BlazeFX
     @using BlazeFX
     ```
 
-2. Include the required stylesheet in your HTML `<head>` section:
+2. Include the required stylesheet and script in your HTML:
 
-    - For Blazor WebAssembly, add the following to `index.html`:
+   - Stylesheet: Add the following to your HTML <head> section
 
     ```html
     <link rel="stylesheet" href="/_content/BlazeFX/blazefx.min.css" />
     ```
+   
+   - Script: Add the following script at the end of the <body> tag:
+   ```html
+    <script src="/_content/BlazeFX/blazefx.js"></script>
+    ```
 
-   For Blazor Server, add it to `_Layout.cshtml`, `_Host.cshtml`, or `App.razor`, depending on your project setup.
+   For Blazor WebAssembly, modify `index.html`.
+   For Blazor Server, modify `_Layout.cshtml`, `_Host.cshtml`, or `App.razor`, depending on your project setup.
 
 ## Usage
 
@@ -66,6 +72,8 @@ You can easily switch between various animations and adjust parameters like `Eas
 - `Easing`: Select an easing function to control the animation's progression
 - `Duration`: Set the length of the animation
 - `Delay`: Add a delay before the animation starts
+- `RenderCompleteOnly`: Ensure the animation runs only after pre-rendering is complete.
+
 
 ## Contributing
 
@@ -92,4 +100,9 @@ If you need help or have any questions, please:
 
 #### Double Animation on First Load
 
-If you encounter issues where animations run twice when your Blazor project/component is loaded for the first time, you may need to disable pre-rendering.
+If animations run twice when your Blazor project/component loads for the first time, use the `RenderCompleteOnly="true"` parameter to ensure the animation runs only after pre-rendering is complete.
+````razor
+<BlazeFX RenderCompleteOnly="true" Animation="Animations.Blinking" Easing="Easing.EaseInOut">
+    <h1>Hello, Animated World!</h1>
+</BlazeFX>
+````

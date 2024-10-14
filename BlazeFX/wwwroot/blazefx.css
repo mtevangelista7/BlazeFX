@@ -1,8 +1,4 @@
-﻿.blazefx-animation {
-    animation-fill-mode: both;
-}
-
-/* Animations */
+﻿/* Animations */
 
 @keyframes fadein {
     from {

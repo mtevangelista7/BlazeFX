@@ -41,7 +41,13 @@ public class BlazeFX : ComponentBase
     [Parameter]
     public bool RenderCompleteOnly { get; set; } = false;
 
-    [Inject] private IJSRuntime JSRuntime { get; set; }
+    /// <summary>
+    /// Defines how the animation affects the element's styles before and after the animation runs
+    /// </summary>
+    [Parameter]
+    public FillMode FillMode { get; set; } = FillMode.Both;
+
+    [Inject] private IJSRuntime JsRuntime { get; set; }
 
     private ElementReference _elementReference;
     private bool _shouldAnimate = false;
@@ -85,7 +91,7 @@ public class BlazeFX : ComponentBase
     private async Task ApplyAnimationAsync()
     {
         var classAttribute = GetClassAttribute();
-        await JSRuntime.InvokeVoidAsync("blazeFX.applyAnimation", _elementReference, classAttribute, _currentStyle);
+        await JsRuntime.InvokeVoidAsync("blazeFX.applyAnimation", _elementReference, classAttribute, _currentStyle);
     }
 
     /// <inheritdoc />
@@ -111,6 +117,7 @@ public class BlazeFX : ComponentBase
         return $"animation-duration: {Duration.TotalSeconds}s; " +
                $"animation-delay: {Delay.TotalSeconds}s; " +
                $"animation-timing-function: {GetEasingFunction()}; " +
+               $"animation-fill-mode: {GetFillMode()}; " +
                $"visibility: visible;";
     }
 
@@ -149,5 +156,10 @@ public class BlazeFX : ComponentBase
             Easing.EaseInOutBack => "cubic-bezier(0.68, -0.6, 0.32, 1.6)",
             _ => "ease" // default
         };
+    }
+
+    private string GetFillMode()
+    {
+        return FillMode.ToString().ToLowerInvariant();
     }
 }

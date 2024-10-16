@@ -6,15 +6,23 @@ using Bunit;
 
 namespace BlazeFX.Tests
 {
+    /// <summary>
+    /// Provides unit tests for the BlazeFX component.
+    /// </summary>
     public class BlazeFXTests : TestContext, IDisposable
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BlazeFXTests"/> class.
+        /// </summary>
         public BlazeFXTests()
         {
             JSInterop.Mode = JSRuntimeMode.Loose;
             JSInterop.SetupVoid("blazeFX.applyAnimation", _ => true);
         }
 
-
+        /// <summary>
+        /// Verifies that the correct CSS class is applied for the animation.
+        /// </summary>
         [Fact]
         public void Animation_ShouldSetCorrectClass()
         {
@@ -26,6 +34,9 @@ namespace BlazeFX.Tests
             Assert.Contains("blazefx-animation fadein", divElement.GetAttribute("class"));
         }
 
+        /// <summary>
+        /// Verifies that the animation style reflects the provided parameters.
+        /// </summary>
         [Fact]
         public void AnimationStyle_ShouldReflectParameters()
         {
@@ -44,6 +55,9 @@ namespace BlazeFX.Tests
             Assert.Contains("animation-fill-mode: forwards", style);
         }
 
+        /// <summary>
+        /// Verifies that the JSRuntime is called after the component is rendered.
+        /// </summary>
         [Fact]
         public void OnAfterRender_ShouldCallJsRuntime()
         {
@@ -55,6 +69,11 @@ namespace BlazeFX.Tests
             Assert.Equal("blazeFX.applyAnimation", invocation.Identifier);
         }
 
+        /// <summary>
+        /// Verifies that the easing parameter is correctly translated to the CSS value.
+        /// </summary>
+        /// <param name="easing">The easing function to test.</param>
+        /// <param name="expectedValue">The expected CSS value for the easing function.</param>
         [Theory]
         [InlineData(Easing.EaseIn, "ease-in")]
         [InlineData(Easing.EaseInOutBack, "cubic-bezier(0.68, -0.6, 0.32, 1.6)")]

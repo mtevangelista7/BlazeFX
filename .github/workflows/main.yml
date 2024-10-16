@@ -1,0 +1,61 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build-test-publish:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '8.0.x'
+        
+    - name: Increase version
+      run: |
+        VERSION=$(grep -oP '(?<=<Version>).*(?=</Version>)' BlazeFX/BlazeFX.csproj)
+        NEW_VERSION=$(echo $VERSION | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
+        sed -i "s|<Version>$VERSION</Version>|<Version>$NEW_VERSION</Version>|" BlazeFX/BlazeFX.csproj
+      
+    - name: Move README into project
+      run: |
+        mv README.md BlazeFX/
+        echo $(pwd)/README.md > readme_path.txt
+        
+    - name: Restore dependencies
+      run: dotnet restore BlazeFX/BlazeFX.csproj
+      
+    - name: Build
+      run: dotnet build BlazeFX/BlazeFX.csproj --configuration Release --no-restore
+      
+    - name: Test
+      run: dotnet test BlazeFX/BlazeFX.csproj --no-restore --verbosity normal
+      
+    - name: Pack
+      run: dotnet pack BlazeFX/BlazeFX.csproj --configuration Release --no-build --output ./nupkg
+      
+    - name: Move README back
+      run: |
+        ORIGINAL_README_PATH=$(cat readme_path.txt)
+        mv BlazeFX/README.md $ORIGINAL_README_PATH
+        rm readme_path.txt
+      
+    - name: Publish to NuGet
+      if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+      run: dotnet nuget push ./nupkg/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_API_KEY}} --skip-duplicate
+      
+    - name: Commit version change
+      if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+      run: |
+        git config --local user.email "matheus.evangelista7@protonmail.com"
+        git config --local user.name "Matheus Evangelista"
+        git add BlazeFX/BlazeFX.csproj
+        git commit -m "Bump version [skip ci]"
+        git push
